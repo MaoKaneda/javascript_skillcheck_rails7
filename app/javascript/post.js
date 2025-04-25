@@ -1,4 +1,3 @@
-// 非同期投稿機能の実装
 function post (){
   const form = document.getElementById("form");
   form.addEventListener("submit", (e) => {
@@ -8,6 +7,10 @@ function post (){
     XHR.responseType = "json";
     XHR.send(formData);
     XHR.onload = () => {
+      if (XHR.status != 200) {
+        alert(`Error ${XHR.status}: ${XHR.statusText}`);
+        return null;
+      };
       const item = XHR.response.article;
       const contentsArea = document.getElementById("contents_area");
       const articleText = document.getElementById("article_text");
@@ -17,10 +20,12 @@ function post (){
         </div>`;
       contentsArea.insertAdjacentHTML("afterbegin", HTML);
       articleText.value = "";
+
+      const charNum  = document.getElementById("char_num");
+      charNum.innerHTML = "0文字";
     };
     e.preventDefault();
   });
 };
 
-// ページ読み込み時にpost関数を実行
-window.addEventListener('turbo:load', post); 
+window.addEventListener('turbo:load', post);
